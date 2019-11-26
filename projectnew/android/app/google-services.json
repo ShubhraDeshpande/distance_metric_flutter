@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "839876218321",
+    "firebase_url": "https://video-clustering-app.firebaseio.com",
+    "project_id": "video-clustering-app",
+    "storage_bucket": "video-clustering-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:839876218321:android:bbdb0783cc74db626624f0",
+        "android_client_info": {
+          "package_name": "com.example.projectnew"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "839876218321-d4d26puicj48mkppp38japsji6g4r09b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8rDWHdQID-6yRyX_XSs9HIOXygfpyo8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "839876218321-d4d26puicj48mkppp38japsji6g4r09b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
