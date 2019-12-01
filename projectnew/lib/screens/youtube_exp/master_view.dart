@@ -28,6 +28,9 @@ final Map<String, String> data1 = {
  };
 final Map<String, bool> score = {};
 
+Map rank_to_items = {
+1 : 0.30, 2: 0.20, 3:0.15, 4:0.10, 5:0.10, 6:0.10, 7: 0.05
+};
   List<String> imageList = [
     "https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png",
     "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png",
@@ -57,20 +60,68 @@ final Map<String, bool> score = {};
   List<String> tempp=["abv", "nihiu", "bhbi"];
   List<String> removedImages =[];
   List<Widget> dragTargetList=[];
-  List<String> youtubeUrls=["https://www.youtube.com/watch?v=x2qIz5FaH34","https://www.youtube.com/watch?v=yt6_i7gQfCk" ,"https://www.youtube.com/watch?v=2ep92qmo1YY", "https://www.youtube.com/watch?v=jPBxuUjDSzg",
-  "https://www.youtube.com/watch?v=S46c-vygIoA",];
-  List<String> secondListY =["https://www.youtube.com/watch?v=JUgaM_IbZ0U", "https://www.youtube.com/watch?v=2T_-eMJXq4g",
-  "https://www.youtube.com/watch?v=eKRFKYkn_A4","https://www.youtube.com/watch?v=uEmhcYWlSC4"];
-  List<String> thirdListY = ["https://www.youtube.com/watch?v=ejs1FekF7fs", "https://www.youtube.com/watch?v=P5hH9YiGLrQ",
-  "https://www.youtube.com/watch?v=_ltz0nMXvR0"];
+  List<String> youtubeUrls=["https://www.youtube.com/watch?v=KKRRGFAf-40","https://www.youtube.com/watch?v=iZclIBp8q_Y","https://www.youtube.com/watch?v=x2qIz5FaH34","https://www.youtube.com/watch?v=3N8M4sS6lLo","https://www.youtube.com/watch?v=KGm_MJe9eoU",
+  "https://www.youtube.com/watch?v=o1ufpLmrXLs", "https://www.youtube.com/watch?v=9Yqaar-KKFA"];
+  List<String> secondListY =["https://www.youtube.com/watch?v=A5ScHWMCFXc", "https://www.youtube.com/watch?v=lZp-OnFWKRQ",
+  "https://www.youtube.com/watch?v=xpCo_HdGTlo","https://www.youtube.com/watch?v=8stRNdfTSZE"];
+  List<String> thirdListY = ["https://www.youtube.com/watch?v=fvnteVjUKMU", "https://www.youtube.com/watch?v=NbkBsUdTZ58",
+  "https://www.youtube.com/watch?v=EheUfEAr_Ys", "https://www.youtube.com/watch?v=s5rg80cyLo0"];
   var labels = new Map();
   var count =0;
 
 final databaseReference = FirebaseDatabase.instance.reference();
+//getting the data
+Map data_recieved ={};
+List urls_list =[];
 int seed = 0;
+bool flag = false;
+ @override
+  void initState() {
+     databaseReference.once().then((DataSnapshot snapshot) {
+     Map stringParams = {};
+        Map params ={};
+        
+        stringParams=snapshot.value; 
+        stringParams.forEach((k,v)=>params[k.toString()] = v);
+        print('Data : ${snapshot.value}');
+          print( params);
+           params["video-clustering-app"]["Genre"].forEach((k,v){
+              print("key: "+k.toString() );
+              data_recieved[params["video-clustering-app"]["Genre"][k]["name"]] = v;
+            });
+          print(data_recieved);
+
+          
+
+          data_recieved.forEach((k,v){
+            data_recieved[k]["urls"].shuffle();
+            var num = (data_recieved[k]["urls"].length * rank_to_items[data_recieved[k]["rank"]]).floor();
+
+            data_recieved[k]["urls"].take(num).forEach((u){ 
+              urls_list.add(u);});
+          print("length of url_list is: "+ urls_list.length.toString());
+          });
+           youtubeUrls.clear();
+          urls_list.forEach((f){
+            youtubeUrls.add(f);
+            print("added");
+
+          });
+          setState(() {
+            flag == true;
+          });
+          });
+          print("finalllll length of url_list is: "+ urls_list.length.toString());
+    super.initState();
+  } @override
+  
 
   @override
   Widget build(BuildContext context) {
+
+    //getting data
+
+
     return Scaffold(
       appBar: AppBar(
           title: Text("Distance learning cluster"),//Text('Score ${score.length} / 6'),
@@ -91,9 +142,15 @@ int seed = 0;
           });
         },
       ),
-      body: Column(
+      
+    
+      body: flag ? CircularProgressIndicator() : 
+      
+    
+      Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+
 
           //***code for showing the flutub demo */
 
@@ -128,7 +185,7 @@ int seed = 0;
                   itemCount: youtubeUrls.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (BuildContext ctxt, int index) {
-                    return _getDraggable(youtubeUrls[index]);
+                    return _getDraggable(youtubeUrls[index], data_recieved);
                   }
               ),
             ),
@@ -161,6 +218,7 @@ int seed = 0;
                     RaisedButton(
                       child: Text('Create Record'),
                       onPressed: () {
+
                         createRecord();
                       },
                     ),
@@ -201,19 +259,12 @@ int seed = 0;
           ),
 
 
-//          Row(
-//            mainAxisAlignment: MainAxisAlignment.spaceAround,
-//            crossAxisAlignment: CrossAxisAlignment.start,
-//            children:
-//            tempp.map((y_url) => _buildDragTarget()).toList()
-//              ..shuffle(Random(seed)),
-//          )
+
         ],
-      ),
-    );
+      ));
   }
 
- Widget _getDraggable(y_url){
+ Widget _getDraggable(y_url, data_recieved){
    print("++++=======+++ the url is: "+ y_url);
     return Draggable<String>(
       data: y_url,
@@ -249,6 +300,13 @@ int seed = 0;
                 setState(() {
 
                   removedImages.add(y_url);
+                  data_recieved.forEach((k,v){
+                      if (data_recieved[k]["urls"].contains(y_url)){
+                        rank_to_items[data_recieved[k]["rank"]] = rank_to_items[data_recieved[k]["rank"]]*0.12;
+                        print("rank of "+data_recieved[k]["rank"].toString() + " reduced to: "+ rank_to_items[data_recieved[k]["rank"]] );
+                      }
+                      });
+                  
                 });
               },
             ),
@@ -373,21 +431,31 @@ int seed = 0;
   }
 
  void createRecord(){
-   databaseReference.child("3").set({
-     'title' : data1['title'],
-     'description': data1['description']
-   });
-   databaseReference.child("4").set({
-     'title' :data2['title'],
-     'description': data2['description']
-   });
+   print("inside create record: we get ____----___---__---__--> ");
+   _getPopUp();
+   
+  //  databaseReference.child("3").set({
+  //    'title' : data1['title'],
+  //    'description': data1['description']
+  //  });
+  //  databaseReference.child("4").set({
+  //    'title' :data2['title'],
+  //    'description': data2['description']
+  //  });
  }
  void getData(){
    databaseReference.once().then((DataSnapshot snapshot) {
-// var parsedJson = json.decode(snapshot);
-// print('${parsedJson.runtimeType} : $parsedJson');     
+     Map stringParams = {};
+
+
+Map params ={};
+Map data_recieved ={};
+
+stringParams=snapshot.value; 
+ stringParams.forEach((k,v)=>params[k.toString()] = v);
+
 print('Data : ${snapshot.value}');
-   //  print("++++++============+++++++++++==========="+ data[Genre]);
+  print( params);
    });
  }
   void _showDialog(context) {
@@ -440,4 +508,70 @@ print('Data : ${snapshot.value}');
     );
   }
 
+Widget retrive_data(){
+return  StreamBuilder(
+stream: databaseReference.onValue,
+builder: (context, snap) {
+if (snap.hasData && !snap.hasError && snap.data.snapshot.value!=null) {
+Map stringParams = {};
+DataSnapshot snapshot = snap.data.snapshot;
+
+Map params ={};
+Map data_recieved ={};
+
+stringParams=snapshot.value; 
+ stringParams.forEach((k,v)=>params[k.toString()] = v);
+
+  params["video-clustering-app"]["Genre"].forEach((k,v){
+    print("key: "+k.toString() );
+    data_recieved[params["video-clustering-app"]["Genre"][k]["name"]] = v;
+   });
+print(data_recieved);
+
+List urls_list =[];
+
+data_recieved.forEach((k,v){
+  data_recieved[k]["urls"].shuffle();
+  var num = (data_recieved[k]["urls"].length * rank_to_items[data_recieved[k]["rank"]]).floor();
+
+  data_recieved[k]["urls"].take(num).forEach((u){ 
+    urls_list.add(u);});
+print("length of url_list is: "+ urls_list.length.toString());
+});
+
+return snap.data.snapshot.value == null
+? SizedBox(): Container(height: 10, width: 10, color: Colors.amber,);
+} else {
+return   Center(child: CircularProgressIndicator());
 }
+},
+);
+
+
+}
+
+void _getPopUp() {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Alert Dialog title"),
+          content: new Text("Alert Dialog body"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            retrive_data(),
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
