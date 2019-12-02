@@ -319,9 +319,11 @@ bool flag = false;
 
                   data_recieved.forEach((k,v){
                     if(data_recieved[k]["urls"].contains(y_url)){
+                      
+                     // rank_to_items[data_recieved[k]["rank"]] = rank_to_items[data_recieved[k]["rank"]]-0.03;
                       print(data_recieved[k]["rank"]);
-                      rank_to_items[data_recieved[k]["rank"]] = rank_to_items[data_recieved[k]["rank"]]*0.12;
-                     // update_data(data_recieved[k]["rank"].toString(), rank_to_items[data_recieved[k]["rank"]]*0.12);
+                      print(rank_to_items[data_recieved[k]["rank"]]);
+                     update_data(data_recieved[k]["rank"].toString(), double.parse(rank_to_items[data_recieved[k]["rank"]]) - 0.01); //.toStringAsFixed(2)
                      // print("updating "+data_recieved[k]["rank"].toString() + " to: " + rank_to_items[data_recieved[k]["rank"]]*0.12.toString() );
                     }
 
@@ -435,9 +437,13 @@ bool flag = false;
 
   }
 void update_data(k,v){
-
+  if(v <0.00){
+    setState(() {
+      v = 0.0;
+    });
+  }
   databaseReference.child("video-clustering-app").child("rank").child("-Lv-yNMeuACqR58CnSDC").update({
-    k: v
+    k: v.toString()
   });
 }
   void _showVideoDialog() {
