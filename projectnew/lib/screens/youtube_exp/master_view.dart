@@ -31,32 +31,8 @@ final Map<String, bool> score = {};
 Map rank_to_items = {
 1 : 0.30, 2: 0.20, 3:0.15, 4:0.10, 5:0.10, 6:0.10, 7: 0.05
 };
-  List<String> imageList = [
-    "https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png",
-    "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png",
-    "https://assets.pokemon.com/assets/cms2/img/pokedex/full/007.png",
-    "https://assets.pokemon.com/assets/cms2/img/pokedex/full/010.png",
-    "https://assets.pokemon.com/assets/cms2/img/pokedex/full/012.png",
-    "https://assets.pokemon.com/assets/cms2/img/pokedex/full/014.png",
-    "https://assets.pokemon.com/assets/cms2/img/pokedex/full/009.png"
-  ];
-
- List<String> secondList =[
-    "https://assets.pokemon.com/assets/cms2/img/pokedex/full/809.png",
-    "https://assets.pokemon.com/assets/cms2/img/pokedex/full/807.png",
-    "https://assets.pokemon.com/assets/cms2/img/pokedex/full/800.png",
-    "https://assets.pokemon.com/assets/cms2/img/pokedex/full/802.png"
-  ];
-
-  List<String> thirdList =[
-    "https://assets.pokemon.com/assets/cms2/img/pokedex/full/460.png",
-    "https://assets.pokemon.com/assets/cms2/img/pokedex/full/306.png",
-    "https://assets.pokemon.com/assets/cms2/img/pokedex/full/063.png",
-    "https://assets.pokemon.com/assets/cms2/img/pokedex/full/698.png",
-    "https://assets.pokemon.com/assets/cms2/img/pokedex/full/024.png",
-    "https://assets.pokemon.com/assets/cms2/img/pokedex/full/681.png"
-
-  ];
+  
+  
   List<String> tempp=["abv", "nihiu", "bhbi"];
   List<String> removedImages =[];
   List<Widget> dragTargetList=[];
@@ -100,13 +76,25 @@ bool flag = false;
 
             data_recieved[k]["urls"].take(num).forEach((u){ 
               urls_list.add(u);});
+              urls_list.shuffle();
           print("length of url_list is: "+ urls_list.length.toString());
           });
            youtubeUrls.clear();
+           secondListY.clear();
+           thirdListY.clear();
+           var first_limit = (urls_list.length*0.20).floor();
+           var second_limit = (urls_list.length*0.30).floor();
+           var c = 0;
           urls_list.forEach((f){
+            if(c <= first_limit){
             youtubeUrls.add(f);
-            print("added");
-
+            print("added");}
+            else if(c <= second_limit){
+               secondListY.add(f);
+            }else{
+              thirdListY.add(f);
+            }
+            c+=1;
           });
 
           rank_to_items.clear();
@@ -225,27 +213,27 @@ bool flag = false;
                 ),
               ),
 
-             Padding(
-               padding: const EdgeInsets.all(8.0),
-               child: Column(
-                  children: <Widget>[
-                    RaisedButton(
-                      child: Text('Create Record'),
-                      onPressed: () {
-
-                        createRecord();
-                      },
-                    ),
-                    RaisedButton(
-                      child: Text('View Record'),
-                      onPressed: () {
+            //  Padding(
+            //    padding: const EdgeInsets.all(8.0),
+            //    child: Column(
+            //       children: <Widget>[
+            //         RaisedButton(
+            //           child: Text('Create Record'),
+            //           onPressed: () {
+            //               //todo: if want to create record, refer commented code in function
+            //            // createRecord();
+            //           },
+            //         ),
+            //         RaisedButton(
+            //           child: Text('View Record'),
+            //           onPressed: () {
                        
-                        getData();
-                      },
-                    )
-                  ],
-                ),
-             ),
+            //             getData();
+            //           },
+            //         )
+            //       ],
+            //     ),
+            //  ),
 
               Padding(
                 padding: const EdgeInsets.only(right: 80.0),
@@ -323,7 +311,7 @@ bool flag = false;
                      // rank_to_items[data_recieved[k]["rank"]] = rank_to_items[data_recieved[k]["rank"]]-0.03;
                       print(data_recieved[k]["rank"]);
                       print(rank_to_items[data_recieved[k]["rank"]]);
-                     update_data(data_recieved[k]["rank"].toString(), double.parse(rank_to_items[data_recieved[k]["rank"]]) - 0.01); //.toStringAsFixed(2)
+                     update_data(data_recieved[k]["rank"].toString(), double.parse(rank_to_items[data_recieved[k]["rank"]]) * 0.12); //.toStringAsFixed(2)
                      // print("updating "+data_recieved[k]["rank"].toString() + " to: " + rank_to_items[data_recieved[k]["rank"]]*0.12.toString() );
                     }
 
@@ -354,8 +342,14 @@ bool flag = false;
     List<String> temppp= [];
     return DragTarget<String>(
       builder: (BuildContext context, List<String> incoming, List rejected) {
+        print("incoming listsssss");
         print(incoming);
         labels[count] = temppp;
+
+        labels.forEach((k,v){
+          createRecord(k, v);
+        });
+        print("lables listsssss");
         print(labels);
         return Padding(
           padding: const EdgeInsets.all(2.0),
@@ -465,10 +459,12 @@ void update_data(k,v){
     );
   }
 
- void createRecord(){
+ void createRecord(k,v){
    print("inside create record: we get ____----___---__---__--> ");
-   _getPopUp();
-   
+   //_getPopUp();  //-----> for reading data
+   databaseReference.child("similar_video_urls").child("-Lv6o23nGONtO7x12dOA").update({
+    k.toString(): v
+  });
   //  databaseReference.child("3").set({
   //    'title' : data1['title'],
   //    'description': data1['description']
@@ -517,7 +513,7 @@ print('Data : ${snapshot.value}');
                   onPressed: () {
                     //GetCentralView(data: data2);
                     setState(() {
-                      if(youtubeUrls==secondList){
+                      if(youtubeUrls==secondListY){
                         youtubeUrls=thirdListY;
                       }else{
                         youtubeUrls = secondListY;}
