@@ -72,6 +72,7 @@ Map rank_to_items = {
 final databaseReference = FirebaseDatabase.instance.reference();
 //getting the data
 Map data_recieved ={};
+
 List urls_list =[];
 int seed = 0;
 bool flag = false;
@@ -107,6 +108,19 @@ bool flag = false;
             print("added");
 
           });
+
+          rank_to_items.clear();
+          var counter = 0;
+          params["video-clustering-app"]["rank"].forEach((k,v){
+              print("key: "+k.toString() );
+              v.forEach((i){
+                     rank_to_items[counter] =i;
+                     counter+=1;
+              });
+             
+            });
+          print(rank_to_items);
+
           setState(() {
             flag == true;
           });
@@ -225,6 +239,7 @@ bool flag = false;
                     RaisedButton(
                       child: Text('View Record'),
                       onPressed: () {
+                       
                         getData();
                       },
                     )
@@ -295,17 +310,26 @@ bool flag = false;
           Padding(
             padding: const EdgeInsets.only(left:60.0),
             child: IconButton(
-              icon: Icon(Icons.clear,),alignment: Alignment.topRight,
+              icon: Icon(Icons.clear, color: Colors.red, size: 40,),alignment: Alignment.topRight,
               onPressed: (){
                 setState(() {
 
                   removedImages.add(y_url);
+                  
+
                   data_recieved.forEach((k,v){
-                      if (data_recieved[k]["urls"].contains(y_url)){
-                        rank_to_items[data_recieved[k]["rank"]] = rank_to_items[data_recieved[k]["rank"]]*0.12;
-                        print("rank of "+data_recieved[k]["rank"].toString() + " reduced to: "+ rank_to_items[data_recieved[k]["rank"]] );
-                      }
-                      });
+                    if(data_recieved[k]["urls"].contains(y_url)){
+                      print(data_recieved[k]["rank"]);
+                      rank_to_items[data_recieved[k]["rank"]] = rank_to_items[data_recieved[k]["rank"]]*0.12;
+                     // update_data(data_recieved[k]["rank"].toString(), rank_to_items[data_recieved[k]["rank"]]*0.12);
+                     // print("updating "+data_recieved[k]["rank"].toString() + " to: " + rank_to_items[data_recieved[k]["rank"]]*0.12.toString() );
+                    }
+
+                  });
+
+                       
+
+
                   
                 });
               },
@@ -410,7 +434,12 @@ bool flag = false;
     );
 
   }
+void update_data(k,v){
 
+  databaseReference.child("video-clustering-app").child("rank").child("-Lv-yNMeuACqR58CnSDC").update({
+    k: v
+  });
+}
   void _showVideoDialog() {
     // flutter defined function
     showDialog(
@@ -574,4 +603,3 @@ void _getPopUp() {
     );
   }
 }
-
