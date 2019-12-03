@@ -127,7 +127,7 @@ bool flag = false;
     return Scaffold(
       appBar: AppBar(
           title: Text("Distance learning cluster"),//Text('Score ${score.length} / 6'),
-          backgroundColor: Colors.pink),
+          backgroundColor: Colors.grey),
       floatingActionButton: FloatingActionButton(
         focusColor: Color.fromRGBO(	208, 239, 255 , 1.0),
         foregroundColor: Colors.white70,
@@ -135,7 +135,7 @@ bool flag = false;
         child: Icon(Icons.refresh),
         onPressed: () {
           setState(() {
-            imageList=imageList;
+            
             removedImages.clear();
             dragTargetList.clear();
             labels.clear();
@@ -149,121 +149,145 @@ bool flag = false;
       body: flag ? CircularProgressIndicator() : 
       
     
-      Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
+      Container(
+        
+        decoration: new BoxDecoration(
+      color: Colors.grey[200],
+      borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(16.0),
+                topRight: Radius.circular( 16.0)
+            )
+    ),
+        child: Padding(
+          padding: const EdgeInsets.only(top:60.0, bottom: 60.0, left: 80.0, right: 80.0),
+          child: Container(
+          decoration: new BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.all(Radius.circular(50.0))
+    ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
 
 
-          //***code for showing the flutub demo */
+                //***code for showing the flutub demo */
 
-          // Container(height: 310, width: MediaQuery.of(context).size.width,
-          // child: new ListView.builder
-          //     (
-          //       itemCount: youtubeUrls.length,
-          //       scrollDirection: Axis.horizontal,
-          //       itemBuilder: (BuildContext ctxt, int index) {
-          //       return Padding(
-          //         padding: const EdgeInsets.all(4.0),
-          //         child: new SizedBox( height: 300, width:300,
-          //   child: FluTube(
-          //     youtubeUrls[index],
-          //     aspectRatio: 4 /3,
-          //     autoPlay: false,
-          //     looping: true,
-          //     onVideoStart: () {},
-          //     onVideoEnd: () {},
-          //   ),
-          // ),
-          //       );
-          //       }
-          //     ),),
+                // Container(height: 310, width: MediaQuery.of(context).size.width,
+                // child: new ListView.builder
+                //     (
+                //       itemCount: youtubeUrls.length,
+                //       scrollDirection: Axis.horizontal,
+                //       itemBuilder: (BuildContext ctxt, int index) {
+                //       return Padding(
+                //         padding: const EdgeInsets.all(4.0),
+                //         child: new SizedBox( height: 300, width:300,
+                //   child: FluTube(
+                //     youtubeUrls[index],
+                //     aspectRatio: 4 /3,
+                //     autoPlay: false,
+                //     looping: true,
+                //     onVideoStart: () {},
+                //     onVideoEnd: () {},
+                //   ),
+                // ),
+                //       );
+                //       }
+                //     ),),
 
 
-          Container(height: 310, width: MediaQuery.of(context).size.width, color: Color.fromRGBO(255, 241, 234, 0.9),
-            child: Padding(
-              padding: const EdgeInsets.only(top:20.0),
-              child: new ListView.builder
-                (
-                  itemCount: youtubeUrls.length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (BuildContext ctxt, int index) {
-                    return _getDraggable(youtubeUrls[index], data_recieved);
-                  }
-              ),
+                Container(height: 280, width: MediaQuery.of(context).size.width, 
+                  decoration: new BoxDecoration(
+                        color: Color.fromRGBO(255, 241, 234, 0.9),
+                        borderRadius: BorderRadius.all(Radius.circular(47.0))
+                      ),
+
+                  child: Padding(
+                    padding: const EdgeInsets.all(14.0),
+                    child: new ListView.builder
+                      (
+                        itemCount: youtubeUrls.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (BuildContext ctxt, int index) {
+                          return _getDraggable(youtubeUrls[index], data_recieved);
+                        }
+                    ),
+                  ),
+                ),
+
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left:80.0),
+                      child: FloatingActionButton(
+                        focusColor: Color.fromRGBO(	208, 239, 255 , 1.0),
+                        foregroundColor: Colors.white70,
+                        backgroundColor: Color.fromRGBO(	255,157,171, 1.0),
+                        child: Icon(Icons.add),
+                        onPressed: (){
+                          setState(() {
+                            dragTargetList.add(_getDragTarget());
+                            count ++;
+                          });
+                        },
+                      ),
+                    ),
+
+                  //  Padding(
+                  //    padding: const EdgeInsets.all(8.0),
+                  //    child: Column(
+                  //       children: <Widget>[
+                  //         RaisedButton(
+                  //           child: Text('Create Record'),
+                  //           onPressed: () {
+                  //               //todo: if want to create record, refer commented code in function
+                  //            // createRecord();
+                  //           },
+                  //         ),
+                  //         RaisedButton(
+                  //           child: Text('View Record'),
+                  //           onPressed: () {
+                             
+                  //             getData();
+                  //           },
+                  //         )
+                  //       ],
+                  //     ),
+                  //  ),
+
+                    Padding(
+                      padding: const EdgeInsets.only(right: 80.0),
+                      child: FloatingActionButton(
+                        focusColor: Color.fromRGBO(	208, 239, 255 , 1.0),
+                        foregroundColor: Colors.white70,
+                        backgroundColor: Color.fromRGBO(255,157,171 , 1.0),
+                        child: Text("Submit"),
+                        onPressed: (){
+                          print(labels);
+                          _showDialog(context);
+                        },
+                      ),
+                    )
+                  ],
+                ),
+                Container( height: 250, width: MediaQuery.of(context).size.width,
+                  child: new ListView.builder
+                    (
+                      itemCount: dragTargetList.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (BuildContext ctxt, int index) {
+                        return dragTargetList[index];
+                      }
+                  ),
+                ),
+
+
+
+              ],
             ),
           ),
-
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left:80.0),
-                child: FloatingActionButton(
-                  focusColor: Color.fromRGBO(	208, 239, 255 , 1.0),
-                  foregroundColor: Colors.white70,
-                  backgroundColor: Color.fromRGBO(	255,157,171, 1.0),
-                  child: Icon(Icons.add),
-                  onPressed: (){
-                    setState(() {
-                      dragTargetList.add(_getDragTarget());
-                      count ++;
-                    });
-                  },
-                ),
-              ),
-
-            //  Padding(
-            //    padding: const EdgeInsets.all(8.0),
-            //    child: Column(
-            //       children: <Widget>[
-            //         RaisedButton(
-            //           child: Text('Create Record'),
-            //           onPressed: () {
-            //               //todo: if want to create record, refer commented code in function
-            //            // createRecord();
-            //           },
-            //         ),
-            //         RaisedButton(
-            //           child: Text('View Record'),
-            //           onPressed: () {
-                       
-            //             getData();
-            //           },
-            //         )
-            //       ],
-            //     ),
-            //  ),
-
-              Padding(
-                padding: const EdgeInsets.only(right: 80.0),
-                child: FloatingActionButton(
-                  focusColor: Color.fromRGBO(	208, 239, 255 , 1.0),
-                  foregroundColor: Colors.white70,
-                  backgroundColor: Color.fromRGBO(255,157,171 , 1.0),
-                  child: Text("Submit"),
-                  onPressed: (){
-                    print(labels);
-                    _showDialog(context);
-                  },
-                ),
-              )
-            ],
-          ),
-          Container( height: 250, width: MediaQuery.of(context).size.width,
-            child: new ListView.builder
-              (
-                itemCount: dragTargetList.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (BuildContext ctxt, int index) {
-                  return dragTargetList[index];
-                }
-            ),
-          ),
-
-
-
-        ],
+        ),
       ));
   }
 
@@ -276,11 +300,16 @@ bool flag = false;
       Stack(
         children: <Widget>[
 
-          Container( height:300, width: 350,
+          Container( height:250, width: 350,
+         decoration: new BoxDecoration(
+                        
+                        borderRadius: BorderRadius.all(Radius.circular(47.0))
+                      ),
             child:
             Padding(
                   padding: const EdgeInsets.all(4.0),
-                  child: new SizedBox( height: 300, width:300,
+                  
+                  child: new Container( height: 250, width:300,
             child: FluTube(
              y_url,
                aspectRatio: 4 /3,
@@ -296,9 +325,9 @@ bool flag = false;
           ),
 
           Padding(
-            padding: const EdgeInsets.only(left:60.0),
+            padding: const EdgeInsets.only(left:290.0),
             child: IconButton(
-              icon: Icon(Icons.clear, color: Colors.red, size: 40,),alignment: Alignment.topRight,
+              icon: Icon(Icons.clear, color: Colors.white, size: 30,),alignment: Alignment.topRight,
               onPressed: (){
                 setState(() {
 
@@ -355,57 +384,61 @@ bool flag = false;
           padding: const EdgeInsets.all(2.0),
           child:
           Container(
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(255, 208, 215,1.0 ),
-                //shape: BoxShape.circle,
-              ),
-              child:
-              Wrap(
-                  children: List.generate(temppp.length, (e)=>
-
-          Draggable<String>(
-            data: temppp[e],
-            child:
-            Container(
-
-              child:
-              Wrap(
-                children: List.generate(temppp.length, (e)=>
-                    Container(height: 150, width: 150,
-                      
-                
-                            child: FluTube(
-                            temppp[e],
-                              aspectRatio: 4 /3,
-                              autoPlay: false,
-                              
-                              looping: true,
-                              onVideoStart: () {},
-                              onVideoEnd: () {},
-                            ),
-                          ),
-                      
-                      //child:_getCircularAvatar(droppedImages[e])
-                      
-                      
+               
+                 decoration: new BoxDecoration(
+                        color: Color.fromRGBO(255, 208, 215,1.0 ),
+                        borderRadius: BorderRadius.all(Radius.circular(47.0))
                       ),
-              ),
-              alignment: Alignment.center,
-              height:250,
-              width: 450,
-            ),
-            //child:_getCircularAvatar(droppedImages[e])
+                child:
+                Wrap(
+                    children: List.generate(temppp.length, (e)=>
 
-            feedback: Container(height: 20, width: 20,
-              //child: Image.network(temppp[e])
-              child:Icon(Icons.favorite)
-              ,),
-            childWhenDragging: Icon(Icons.pets,color: Colors.black45,) ,),
-                  )),
-              alignment: Alignment.center,
-              height: 250,
-              width: 450,
+            Draggable<String>(
+              data: temppp[e],
+              child:
+              Container(
+
+                child:
+                Wrap(
+                  children: List.generate(temppp.length, (e)=>
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Container(height: 150, width: 140,
+              
+                    
+                    child: FluTube(
+                    temppp[e],
+                      aspectRatio: 4 /3,
+                      autoPlay: false,
+                      
+                      looping: true,
+                      onVideoStart: () {},
+                      onVideoEnd: () {},
+                    ),
+                  ),
+          ),
+            
+            //child:_getCircularAvatar(droppedImages[e])
+            
+            
             ),
+                ),
+                alignment: Alignment.center,
+                height:250,
+                width: 450,
+              ),
+              //child:_getCircularAvatar(droppedImages[e])
+
+              feedback: Container(height: 20, width: 20,
+                //child: Image.network(temppp[e])
+                child:Icon(Icons.favorite)
+                ,),
+              childWhenDragging: Icon(Icons.pets,color: Colors.black45,) ,),
+                    )),
+                alignment: Alignment.center,
+                height: 250,
+                width: 450,
+              ),
 
 
 
@@ -450,7 +483,7 @@ void update_data(k,v){
 
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
-            Container(height: 350,
+            Container(height: 250,
                 width: 300,child: FlutterYoutubeA()),
 
           ],
@@ -500,39 +533,49 @@ print('Data : ${snapshot.value}');
           content: new Text("Want to see new List? "),
           actions: <Widget>[
             Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                new FlatButton(
-                  child: new Text("No"),
-                  onPressed: () {
-                   // GetCentralView(data: data1,);
-                    Navigator.of(context).pop();
-                  },
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: new RaisedButton(
+                    child: Container(
+                       decoration: new BoxDecoration(
+                          
+                          borderRadius: BorderRadius.all(Radius.circular(50.0))
+                        ),
+                      
+                      child: 
+                  new Text("No")),
+                    onPressed: () {
+                     // GetCentralView(data: data1,);
+                      Navigator.of(context).pop();
+                    },
+                  ),
                 ),
-                new FlatButton(
-                  child: new Text("Yes"),
-                  onPressed: () {
-                    //GetCentralView(data: data2);
-                    setState(() {
-                      if(youtubeUrls==secondListY){
-                        youtubeUrls=thirdListY;
-                      }else{
-                        youtubeUrls = secondListY;}
-                    });
-                    Navigator.of(context).pop();
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: new RaisedButton(
+                    child: Container(child: new Text("Yes")),
+                    onPressed: () {
+                      //GetCentralView(data: data2);
+                      setState(() {
+                        if(youtubeUrls==secondListY){
+                          youtubeUrls=thirdListY;
+                        }else{
+                          youtubeUrls = secondListY;}
+                      });
+                      Navigator.of(context).pop();
 
 
-                  },
+                    },
+                  ),
                 ),
               ],
             ),
 
             // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text("Close"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
+            
           ],
         );
       },
