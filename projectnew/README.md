@@ -14,3 +14,9 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+
+while hosting from other server:
+  modify projectNew/screens/youtubeExp/API.dart
+  go to line : 6 
+  change the link to your endpoint
